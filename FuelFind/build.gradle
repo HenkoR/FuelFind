@@ -1,0 +1,35 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.5.+'
+    }
+}
+apply plugin: 'android'
+
+repositories {
+    mavenCentral()
+}
+
+android {
+    compileSdkVersion 17
+    buildToolsVersion "17.0.0"
+
+    defaultConfig {
+        minSdkVersion 10
+        targetSdkVersion 16
+    }
+}
+
+List myDependencies = ["com.android.support:appcompat-v7:18.0.+","com.android.support:support-v4:18.0.+",
+        fileTree (dir: 'C:\\Users\\Werner\\Dropbox\\Android\\Apps\\FuelFindProject\\FuelFind\\lib', includes: ['*.jar'])]
+
+dependencies {
+    compile myDependencies
+}
+/*
+dependencies {
+	compile 'com.android.support:appcompat-v7:18.0.0'
+	compile 'com.android.support:support-v4:18.0.0'
+}*/
