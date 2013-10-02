@@ -25,6 +25,7 @@ android {
 List myDependencies = ["com.android.support:appcompat-v7:18.0.+","com.android.support:support-v4:18.0.+",
         fileTree (dir: 'C:\\Users\\Werner\\Dropbox\\Android\\Apps\\FuelFindProject\\FuelFind\\lib', includes: ['*.jar'])]
 
+
 dependencies {
     compile myDependencies
 }
