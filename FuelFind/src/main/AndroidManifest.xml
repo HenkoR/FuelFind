@@ -16,10 +16,11 @@
         <activity
             android:name="com.truemobile.fuelfind.MainActivity"
             android:label="@string/title_activity_main" >
-        </activity>
-        <activity
-            android:name="com.truemobile.fuelfind.BasicMapActivity"
-            android:label="@string/title_activity_basic_map" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

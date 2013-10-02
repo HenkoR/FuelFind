@@ -1,158 +1,23 @@
-package com.truemobile.fuelfind;
-
-import android.app.ListActivity;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
+package com\truemobile\fuelfind;
 
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
 
-public final class MainActivity extends ListActivity {
-
-    /**
-     * A simple POJO that holds the details about the demo that are used by the List Adapter.
-     */
-    private static class DemoDetails {
-        /**
-         * The resource id of the title of the demo.
-         */
-        private final int titleId;
-
-        /**
-         * The resources id of the description of the demo.
-         */
-        private final int descriptionId;
-
-        /**
-         * The demo activity's class.
-         */
-        private final Class<? extends FragmentActivity> activityClass;
-
-        public DemoDetails(
-                int titleId, int descriptionId, Class<? extends FragmentActivity> activityClass) {
-            super();
-            this.titleId = titleId;
-            this.descriptionId = descriptionId;
-            this.activityClass = activityClass;
-        }
-    }
-
-    /**
-     * A custom array adapter that shows a {@link FeatureView} containing details about the demo.
-     */
-    private static class CustomArrayAdapter extends ArrayAdapter<DemoDetails> {
-
-        /**
-         * @param demos An array containing the details of the demos to be displayed.
-         */
-        public CustomArrayAdapter(Context context, DemoDetails[] demos) {
-            super(context, R.layout.feature, R.id.title, demos);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            FeatureView featureView;
-            if (convertView instanceof FeatureView) {
-                featureView = (FeatureView) convertView;
-            } else {
-                featureView = new FeatureView(getContext());
-            }
-
-            DemoDetails demo = getItem(position);
-
-            featureView.setTitleId(demo.titleId);
-            featureView.setDescriptionId(demo.descriptionId);
-
-            return featureView;
-        }
-    }
-
-    private static final DemoDetails[] demos = {new DemoDetails(
-            R.string.basic_map, R.string.basic_description, BasicMapActivity.class),
-            new DemoDetails(R.string.camera_demo, R.string.camera_description,
-                    CameraDemoActivity.class),
-            new DemoDetails(R.string.events_demo, R.string.events_description,
-                    EventsDemoActivity.class),
-            new DemoDetails(R.string.layers_demo, R.string.layers_description,
-                    LayersDemoActivity.class),
-            new DemoDetails(
-                    R.string.locationsource_demo, R.string.locationsource_description,
-                    LocationSourceDemoActivity.class),
-            new DemoDetails(R.string.my_location_demo, R.string.my_location_description,
-                    MyLocationDemoActivity.class),
-            new DemoDetails(R.string.uisettings_demo, R.string.uisettings_description,
-                    UiSettingsDemoActivity.class),
-            new DemoDetails(R.string.groundoverlay_demo, R.string.groundoverlay_description,
-                    GroundOverlayDemoActivity.class),
-            new DemoDetails(R.string.marker_demo, R.string.marker_description,
-                    MarkerDemoActivity.class),
-            new DemoDetails(R.string.polygon_demo, R.string.polygon_description,
-                    PolygonDemoActivity.class),
-            new DemoDetails(R.string.polyline_demo, R.string.polyline_description,
-                    PolylineDemoActivity.class),
-            new DemoDetails(R.string.circle_demo, R.string.circle_description,
-                    CircleDemoActivity.class),
-            new DemoDetails(R.string.tile_overlay_demo, R.string.tile_overlay_description,
-                    TileOverlayDemoActivity.class),
-            new DemoDetails(R.string.options_demo, R.string.options_description,
-                    OptionsDemoActivity.class),
-            new DemoDetails(R.string.multi_map_demo, R.string.multi_map_description,
-                    MultiMapDemoActivity.class),
-            new DemoDetails(R.string.retain_map, R.string.retain_map_description,
-                    RetainMapActivity.class),
-            new DemoDetails(R.string.raw_mapview_demo, R.string.raw_mapview_description,
-                    RawMapViewDemoActivity.class),
-            new DemoDetails(R.string.programmatic_demo, R.string.programmatic_description,
-                    ProgrammaticDemoActivity.class),
-            new DemoDetails(R.string.visible_region_demo, R.string.visible_region_description,
-                    VisibleRegionDemoActivity.class),
-            new DemoDetails(R.string.save_state_demo, R.string.save_state_description,
-                    SaveStateDemoActivity.class),
-            new DemoDetails(R.string.snapshot_demo, R.string.snapshot_description,
-                    SnapshotDemoActivity.class),
-            new DemoDetails(R.string.mapinpager_demo, R.string.mapinpager_description,
-                    MapInPagerActivity.class)};
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-
-        ListAdapter adapter = new CustomArrayAdapter(this, demos);
-
-        setListAdapter(adapter);
+        setContentView(R.layout.activity_main);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_main, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        if (item.getItemId() == R.id.menu_legal) {
-            startActivity(new Intent(this, LegalInfoActivity.class));
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        DemoDetails demo = (DemoDetails) getListAdapter().getItem(position);
-        startActivity(new Intent(this, demo.activityClass));
-    }
+    
 }
