@@ -36,7 +36,11 @@ public class MainActivity extends Activity {
 
         // Zoom in, animating the camera.
         map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+
+  map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
