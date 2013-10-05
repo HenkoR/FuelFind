@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FuelFind/FuelFind.iml" filepath="$PROJECT_DIR$/FuelFind/FuelFind.iml" />
       <module fileurl="file://$PROJECT_DIR$/FuelFindProject.iml" filepath="$PROJECT_DIR$/FuelFindProject.iml" />
+      <module fileurl="file://$PROJECT_DIR$/google-play-services_lib/google-play-services_lib.iml" filepath="$PROJECT_DIR$/google-play-services_lib/google-play-services_lib.iml" />
     </modules>
   </component>
 </project>

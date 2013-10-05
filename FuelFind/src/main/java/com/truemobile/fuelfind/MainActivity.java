@@ -1,48 +1,47 @@
 package com.truemobile.fuelfind;
-
-import android.app.ListActivity;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.Menu;
-import android.view.View;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
-import com.google.android.maps.MapActivity;
-import com.google.android.maps.MapView;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-public class MainActivity extends MapActivity {
+public class MainActivity extends Activity {
+    static final LatLng HAMBURG = new LatLng(53.558, 9.927);
+    static final LatLng KIEL = new LatLng(53.551, 9.993);
+    private GoogleMap map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
+                .getMap();
+        Marker hamburg = map.addMarker(new MarkerOptions().position(HAMBURG)
+                .title("Hamburg"));
+        Marker kiel = map.addMarker(new MarkerOptions()
+                .position(KIEL)
+                .title("Kiel")
+                .snippet("Kiel is cool")
+                .icon(BitmapDescriptorFactory
+                        .fromResource(R.drawable.ic_launcher)));
 
-        MapView mapView = (MapView) findViewById(R.id.mapview);
-        mapView.setBuiltInZoomControls(true);
-    }
+        // Move the camera instantly to hamburg with a zoom of 15.
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(HAMBURG, 15));
 
-    @Override
-    protected boolean isRouteDisplayed() {
-        return false;
+        // Zoom in, animating the camera.
+        map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-    
+
 }

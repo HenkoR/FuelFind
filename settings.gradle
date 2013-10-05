@@ -1,1 +1,1 @@
-include ':FuelFind'
+include ':FuelFind',':google-play-services_lib'
