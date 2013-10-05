@@ -17,12 +17,12 @@ android {
     buildToolsVersion "17.0.0"
 
     signingConfigs {
-      /*  debug {
-            storeFile file("debug.keystore")
-        }*/
+        debug {
+            storeFile file("C:\\Users\\Werner\\.android\\debug.keystore")
+        }
 
         myConfig {
-            storeFile file("truemobile.jks")
+            storeFile file("C:\\Users\\Werner\\Dropbox\\Android\\Apps\\keystore\\truemobile.jks")
             storePassword "1234567890"
             keyAlias "fuelfind"
             keyPassword "1234567890"
