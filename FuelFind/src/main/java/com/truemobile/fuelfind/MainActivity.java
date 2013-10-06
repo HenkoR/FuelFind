@@ -98,8 +98,23 @@ private void SampleMapInfo(){
             .position(HATFIELD)
             .title("Title")
             .snippet("Seems to work fine")
+            .flat(true)
             .icon(BitmapDescriptorFactory
                     .fromResource(R.drawable.ic_launcher)));
+
+
+    List<String> PetrolLocations = Arrays.asList(getResources().getStringArray(R.array.petrol_location));
+
+    for(String item : PetrolLocations)
+    {
+        String[] LatLong = item.split(",");
+        mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(Double.parseDouble(LatLong[1]),Double.parseDouble(LatLong[0])))
+                .title("Title")
+                .snippet("Seems to work fine")
+                .icon(BitmapDescriptorFactory
+                        .fromResource(R.drawable.ic_launcher)));
+    }
 
     // Move the camera instantly to hamburg with a zoom of 15.
     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(HATFIELD, 15));

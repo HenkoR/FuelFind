@@ -14,6 +14,15 @@
         <item>Settings</item>
         <item>Send feedback</item>
     </string-array>
+
+    <string-array name="petrol_location">
+        <item>28.6025098,-27.0100099</item>
+        <item>28.1474897,-32.3319992</item>
+        <item>28.1624790,-25.7248999</item>
+        <item>28.0914297,-25.6486795</item>
+        <item>28.1158596,-26.0070396</item>
+    </string-array>
+
     <string name="drawer_open">Settings</string>
     <string name="drawer_close">Fuel Find</string>
 </resources>
