@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
@@ -29,6 +30,7 @@ import android.widget.ListView;
 import android.widget.TabWidget;
 import android.widget.Toast;
 
+import com.google.android.gms.internal.ca;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -38,8 +40,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.truemobile.fuelfind.data.FuelFindDataContext;
+import com.truemobile.fuelfind.data.ServiceStation;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -59,15 +64,21 @@ public class MainActivity extends Activity {
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
 
+    private FuelFindDataContext mFuelFindDataContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAppContext = this.getApplicationContext();
         mContext = this;
+        mFuelFindDataContext = new FuelFindDataContext(mAppContext);
+
         mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
                 .getMap();
+        mMap.setOnMarkerClickListener(new MapMarkerClickListener());
 
+        mMap.setOnMyLocationChangeListener(new MyLocationChangeListener());
         mTitle = mDrawerTitle = getTitle();
         mDrawerListTitles = getResources().getStringArray(R.array.left_drawer_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -118,7 +129,33 @@ public class MainActivity extends Activity {
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.getUiSettings().setZoomControlsEnabled(false);
-        SampleMapInfo();
+
+        PopulateMarkers();
+    }
+
+    private class MyLocationChangeListener implements GoogleMap.OnMyLocationChangeListener {
+
+        @Override
+        public void onMyLocationChange(Location location) {
+            MoveTo(null, location.getLatitude(), location.getLongitude(), false, mMap.getCameraPosition().zoom);
+        }
+    }
+
+    private class MapMarkerClickListener implements GoogleMap.OnMarkerClickListener {
+        @Override
+        public boolean onMarkerClick(Marker marker) {
+            LatLng markerLocation = marker.getPosition();
+            Location currentLocation = mMap.getMyLocation();
+            DecimalFormat df = new DecimalFormat("0.00##");
+            String navigationUrl = "http://maps.google.com/maps?saddr=%s,%s&daddr=%s,%s";
+            try {
+                Intent navIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(navigationUrl.format(df.format(currentLocation.getLatitude()), df.format(currentLocation.getLongitude()), df.format(markerLocation.latitude), df.format(markerLocation.longitude))));
+                mContext.startActivity(navIntent);
+            } catch (Exception ex) {
+                return false;
+            }
+            return true;
+        }
     }
 
     private class SearchItemClickListener implements AdapterView.OnItemClickListener {
@@ -127,7 +164,7 @@ public class MainActivity extends Activity {
                                 int position, long id) {
             final Address item = (Address) parent.getItemAtPosition(position);
             mSearchList.setAdapter(null);
-            MoveTo(item, item.getLatitude(), item.getLongitude());
+            MoveTo(item, item.getLatitude(), item.getLongitude(), true, 15);
         }
 
     }
@@ -161,7 +198,7 @@ public class MainActivity extends Activity {
                     // mMap.addPolygon(rectange);
                     List<Address> addresses = new Geocoder(mAppContext).getFromLocationName(mSearch.getText().toString(), 5, leftBot.latitude, leftBot.longitude, rightTop.latitude, rightTop.longitude);
                     if (addresses.size() == 1) {
-                        MoveTo(addresses.get(0), addresses.get(0).getLatitude(), addresses.get(0).getLongitude());
+                        MoveTo(addresses.get(0), addresses.get(0).getLatitude(), addresses.get(0).getLongitude(), true, 15);
                         mSearchList.setAdapter(null);
                     } else if (addresses.size() > 1) {
                         final AddressArrayAdapter adapter = new AddressArrayAdapter(mContext,
@@ -179,6 +216,26 @@ public class MainActivity extends Activity {
         }
     }
 
+    private void PopulateMarkers() {
+        List<ServiceStation> allStations = mFuelFindDataContext.GetAllServiceStations();
+
+        for (ServiceStation station : allStations) {
+            LatLng currentMarkerLocation = new LatLng(station.Lat, station.Lng);
+
+            Marker marker = mMap.addMarker(new MarkerOptions()
+                    .position(currentMarkerLocation)
+                    .title(station.name)
+                    .snippet(station.GetDescription())
+                    .icon(BitmapDescriptorFactory
+                            .fromResource(R.drawable.ic_launcher)));
+        }
+    }
+
+
+    private Location GetCurrentLocation() {
+        return mMap.getMyLocation();
+    }
+/*
     private void SampleMapInfo() {
 
         Marker marker = mMap.addMarker(new MarkerOptions()
@@ -202,9 +259,9 @@ public class MainActivity extends Activity {
                             .fromResource(R.drawable.ic_launcher)));
         }
         MoveTo(null, HATFIELD.latitude, HATFIELD.longitude);
-    }
+    }*/
 
-    private void MoveTo(Address address, double latitude, double longitude) {
+    private void MoveTo(Address address, double latitude, double longitude, boolean animateCamera, float zoom) {
         if (address != null) {
             if (ClickedSearchMarker != null) {
                 ClickedSearchMarker.remove();
@@ -219,10 +276,12 @@ public class MainActivity extends Activity {
                             .fromResource(R.drawable.ic_launcher)));
         }
         // Move the camera instantly to hamburg with a zoom of 15.
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 15));
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), zoom));
 
         // Zoom in, animating the camera.
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+        if (animateCamera)
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
     }
 
     @Override
@@ -265,7 +324,6 @@ public class MainActivity extends Activity {
         }*/
         return super.onOptionsItemSelected(item);
     }
-
 
     /* The click listner for ListView in the navigation drawer */
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
