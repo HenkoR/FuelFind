@@ -1,4 +1,5 @@
 package com.truemobile.fuelfind;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -43,7 +44,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends Activity {
-    static final LatLng HATFIELD = new LatLng(-25.748752,28.237165);
+    static final LatLng HATFIELD = new LatLng(-25.748752, 28.237165);
     private static Context mAppContext;
     private static Context mContext;
     private GoogleMap mMap;
@@ -71,7 +72,7 @@ public class MainActivity extends Activity {
         mDrawerListTitles = getResources().getStringArray(R.array.left_drawer_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        mSearch  = (EditText) findViewById(R.id.search_edit);
+        mSearch = (EditText) findViewById(R.id.search_edit);
         mSearchList = (ListView) findViewById(R.id.search_list);
 
         // set a custom shadow that overlays the main content when the drawer opens
@@ -103,7 +104,8 @@ public class MainActivity extends Activity {
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-        mSearch.addTextChangedListener(new SearchTextChanged() {});
+        mSearch.addTextChangedListener(new SearchTextChanged() {
+        });
 
         if (savedInstanceState == null) {
             selectItem(0);
@@ -119,20 +121,18 @@ public class MainActivity extends Activity {
         SampleMapInfo();
     }
 
-    private class SearchItemClickListener implements  AdapterView.OnItemClickListener
-    {
+    private class SearchItemClickListener implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, final View view,
                                 int position, long id) {
             final Address item = (Address) parent.getItemAtPosition(position);
             mSearchList.setAdapter(null);
-            MoveTo(item,item.getLatitude(), item.getLongitude());
+            MoveTo(item, item.getLatitude(), item.getLongitude());
         }
 
     }
 
-    private class SearchTextChanged implements TextWatcher
-    {
+    private class SearchTextChanged implements TextWatcher {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
 
@@ -146,31 +146,30 @@ public class MainActivity extends Activity {
         @Override
         public void afterTextChanged(Editable editable) {
             try {
-                if(mSearch.getText().toString().length() > 0 ){
-                Location currentLocation =  mMap.getMyLocation();
-               // PolygonOptions rectange = new PolygonOptions();
-                //LatLng leftTop = new LatLng(currentLocation.getLatitude()-1,currentLocation.getLongitude()+1);
-                LatLng leftBot = new LatLng(currentLocation.getLatitude()-1,currentLocation.getLongitude()-1);
-                LatLng rightTop = new LatLng(currentLocation.getLatitude()+1,currentLocation.getLongitude()+1);
-                //LatLng rightBot =  new LatLng(currentLocation.getLatitude()+1,currentLocation.getLongitude()-1);
-                //rectange.add(leftTop);
-               // rectange.add(rightTop);
-                //rectange.add(rightBot);
-               // rectange.add(leftBot);
-               // rectange.fillColor(android.R.color.holo_red_dark);
-               // mMap.addPolygon(rectange);
-                List<Address> addresses = new Geocoder(mAppContext).getFromLocationName(mSearch.getText().toString(), 5,leftBot.latitude, leftBot.longitude,rightTop.latitude, rightTop.longitude);
-                if(addresses.size() == 1){
-                    MoveTo(addresses.get(0),addresses.get(0).getLatitude(),addresses.get(0).getLongitude());
-                    mSearchList.setAdapter(null);
-                }else  if(addresses.size() > 1){
-                    final AddressArrayAdapter adapter = new AddressArrayAdapter(mContext,
-                            R.layout.search_list_item, addresses);
-                    mSearchList.setAdapter(adapter);
+                if (mSearch.getText().toString().length() > 0) {
+                    Location currentLocation = mMap.getMyLocation();
+                    // PolygonOptions rectange = new PolygonOptions();
+                    //LatLng leftTop = new LatLng(currentLocation.getLatitude()-1,currentLocation.getLongitude()+1);
+                    LatLng leftBot = new LatLng(currentLocation.getLatitude() - 1, currentLocation.getLongitude() - 1);
+                    LatLng rightTop = new LatLng(currentLocation.getLatitude() + 1, currentLocation.getLongitude() + 1);
+                    //LatLng rightBot =  new LatLng(currentLocation.getLatitude()+1,currentLocation.getLongitude()-1);
+                    //rectange.add(leftTop);
+                    // rectange.add(rightTop);
+                    //rectange.add(rightBot);
+                    // rectange.add(leftBot);
+                    // rectange.fillColor(android.R.color.holo_red_dark);
+                    // mMap.addPolygon(rectange);
+                    List<Address> addresses = new Geocoder(mAppContext).getFromLocationName(mSearch.getText().toString(), 5, leftBot.latitude, leftBot.longitude, rightTop.latitude, rightTop.longitude);
+                    if (addresses.size() == 1) {
+                        MoveTo(addresses.get(0), addresses.get(0).getLatitude(), addresses.get(0).getLongitude());
+                        mSearchList.setAdapter(null);
+                    } else if (addresses.size() > 1) {
+                        final AddressArrayAdapter adapter = new AddressArrayAdapter(mContext,
+                                R.layout.search_list_item, addresses);
+                        mSearchList.setAdapter(adapter);
 
-                }
-                }else
-                {
+                    }
+                } else {
                     mSearchList.setAdapter(null);
                 }
 
@@ -180,7 +179,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void SampleMapInfo(){
+    private void SampleMapInfo() {
 
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(HATFIELD)
@@ -193,8 +192,7 @@ public class MainActivity extends Activity {
 
         List<String> PetrolLocations = Arrays.asList(getResources().getStringArray(R.array.petrol_location));
 
-        for(String item : PetrolLocations)
-        {
+        for (String item : PetrolLocations) {
             String[] LatLong = item.split(",");
             mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(Double.parseDouble(LatLong[1]), Double.parseDouble(LatLong[0])))
@@ -203,26 +201,25 @@ public class MainActivity extends Activity {
                     .icon(BitmapDescriptorFactory
                             .fromResource(R.drawable.ic_launcher)));
         }
-        MoveTo(null,HATFIELD.latitude,HATFIELD.longitude);
+        MoveTo(null, HATFIELD.latitude, HATFIELD.longitude);
     }
 
-    private void MoveTo(Address address ,double latitude, double longitude)
-    {
-        if(address != null){
-            if(ClickedSearchMarker != null){
+    private void MoveTo(Address address, double latitude, double longitude) {
+        if (address != null) {
+            if (ClickedSearchMarker != null) {
                 ClickedSearchMarker.remove();
             }
 
             ClickedSearchMarker = mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(latitude,longitude))
-                .title(address.getFeatureName())
-                .snippet(address.getAddressLine(2))
-                .flat(true)
-                .icon(BitmapDescriptorFactory
-                        .fromResource(R.drawable.ic_launcher)));
+                    .position(new LatLng(latitude, longitude))
+                    .title(address.getFeatureName())
+                    .snippet(address.getAddressLine(2))
+                    .flat(true)
+                    .icon(BitmapDescriptorFactory
+                            .fromResource(R.drawable.ic_launcher)));
         }
         // Move the camera instantly to hamburg with a zoom of 15.
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude), 15));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 15));
 
         // Zoom in, animating the camera.
         mMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
@@ -265,7 +262,8 @@ public class MainActivity extends Activity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }*/ return super.onOptionsItemSelected(item);
+        }*/
+        return super.onOptionsItemSelected(item);
     }
 
 
@@ -279,29 +277,31 @@ public class MainActivity extends Activity {
 
     private void selectItem(int position) {
 
-        switch (position)
-        {   //Normal
-            case 0 :
+        switch (position) {   //Normal
+            case 0:
                 mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
                 break;
             //Satellite
-            case 1 :
+            case 1:
                 mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
                 break;
             //Hybrid
-            case 2 :
+            case 2:
                 mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
                 break;
             //Terrain
-            case 3 :
+            case 3:
                 mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
                 break;
             //Help
-            case 4 : break;
+            case 4:
+                break;
             //Settings
-            case 5 : break;
+            case 5:
+                break;
             //Send feedback
-            case 6 : break;
+            case 6:
+                break;
 
         }
 
@@ -334,4 +334,18 @@ public class MainActivity extends Activity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+
+            if (drawerOpen) {
+                mDrawerLayout.closeDrawers();
+            } else {
+                mDrawerLayout.openDrawer(mDrawerList);
+            }
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
+    }
 }
